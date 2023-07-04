@@ -6,7 +6,7 @@ rho_crit = 1.27e-7  # critical density, Msol / kpc^3
 
 # Disk properties
 m_disk = 1e10  # disk mass, Msol
-r_disk = 5  # disk radius, kpc
+r_disk = 1  # disk radius, kpc
 h_disk = 0.5  # disk scale height, kpc
 
 # Halo properties
@@ -18,5 +18,4 @@ a = 5
 m_star = 1.3e8  # stellar disk mass, Msol
 
 # Particle properties
-m_particle = 10**4  # sim particle mass, Msol
-
+m_particle = 10**5  # sim particle mass, Msol

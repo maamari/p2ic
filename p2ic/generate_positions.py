@@ -1,6 +1,38 @@
 import numpy as np
+import matplotlib.pyplot as plt
 from p2ic.constants import *
 from p2ic.density_profiles import *
+from p2ic.utils import *
+
+def random_points_in_shell(radius, count, thickness, is_disk=False):
+    """
+    Generate random points in a shell.
+
+    Parameters:
+        radius (float): Mean radius of the shell.
+        count (int): Number of points to generate.
+        thickness (float): Thickness of the shell.
+        is_disk (bool, optional): Whether the shell is a disk. Defaults to False.
+
+    Returns:
+        tuple: x, y, and z coordinates of the generated points.
+    """
+    u = np.random.uniform(0, 1, count)
+    v = np.random.uniform(0, 1, count)
+    if is_disk:
+        theta = 2 * np.pi * u
+        r = np.random.uniform(radius - thickness/2, radius + thickness/2, count)  # points lie within this shell
+        x = r * np.cos(theta)
+        y = r * np.sin(theta)
+        z = np.random.normal(0, h_disk, count)
+    else:  # is a sphere
+        phi = np.arccos(2 * v - 1)
+        theta = 2 * np.pi * u
+        r = np.random.uniform(radius - thickness/2, radius + thickness/2, count)  # points lie within this shell
+        x = r * np.sin(phi) * np.cos(theta)
+        y = r * np.sin(phi) * np.sin(theta)
+        z = r * np.cos(phi)
+    return x, y, z
 
 def random_points_in_volume(radius, count, is_disk=False):
     """
@@ -43,7 +75,7 @@ def radial_distance(x, y):
     """
     return np.sqrt(x**2 + y**2)
 
-def num_part(radii, profile, m_particle, is_disk=False):
+def num_part(radii, profile, is_disk=False):
     """
     Calculate the number of particles in a given profile.
 
@@ -60,21 +92,24 @@ def num_part(radii, profile, m_particle, is_disk=False):
     else:  # is a sphere
         return profile * (4/3) * np.pi * (radii**3) / m_particle
 
-def part_positions(radii, counts, is_disk=False):
+def part_positions(radii, profile, thickness, is_disk=False):
     """
     Generate particle positions for each radius.
 
     Parameters:
         radii (array-like): Array of radii.
-        counts (array-like): Array of particle counts for each radius.
+        profile (array-like): Array of profile values for each radius.
+        thickness (float): Thickness of the shell.
         is_disk (bool, optional): Whether the particles belong to a disk. Defaults to False.
 
     Returns:
         tuple: Arrays of x, y, and z coordinates for the generated particles.
     """
+    counts = num_part(radii, profile, is_disk)
+
     x, y, z = [], [], []
     for r, count in zip(radii, counts):
-        x_r, y_r, z_r = random_points_in_volume(r, int(count), is_disk)
+        x_r, y_r, z_r = random_points_in_shell(r, int(count), thickness, is_disk)
         x.extend(x_r)
         y.extend(y_r)
         z.extend(z_r)
@@ -109,4 +144,25 @@ def compute_dens(radii, x, y, z, is_disk=False):
         return masses / areas / h_disk
     else:
         return masses / volumes
+
+
+def density(r=None, z=0, dens_func=None, xlim=[0,20], ylim=[0,20], logx=False, logy=False, npts=20):
+    """
+    Calculate the dispersion of velocity components
+
+    Parameters:
+        x (array-like): x coordinates
+        y (array-like): y coordinates
+        z (array-like): z coordinates
+        v_mag (float): Magnitude of velocity
+        disp_func (function, optional): Function to calculate the velocity dispersion. Defaults to None
+
+    Returns:
+        tuple: Radial distances and velocity components (vx, vy, vz)
+    """
+    if dens_func:
+        prof = dens_func(r, z)
+    else:
+        r, prof = inter_prof(xlim,ylim,logx,logy,npts)
+    return np.array(r), np.array(prof)
 

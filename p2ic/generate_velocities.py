@@ -2,6 +2,7 @@ import numpy as np
 from p2ic.constants import *
 from p2ic.density_profiles import *
 from p2ic.velocity_profiles import *
+from p2ic.utils import *
 from scipy.integrate import quad
 import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d
@@ -22,28 +23,7 @@ def vdisp_function(radii, existing_radii, existing_dispersions):
     vdisp = interp(radii)
     return vdisp
 
-def inter_prof(xlims, ylims):
-    """
-    Interactively select data points on a plot
-
-    Parameters:
-        xlims (list): List of x-axis limits [xmin, xmax]
-        ylims (list): List of y-axis limits [ymin, ymax]
-
-    Returns:
-        tuple: Lists of selected x and y coordinates
-    """
-    ax = plt.gca()
-    ax.set_xlim(xlims[0],xlims[1])
-    ax.set_ylim(ylims[0],ylims[1])
-    pts = plt.ginput(20)
-    plt.close()
-    x1 = [p[0] for p in pts]
-    y1 = [p[1] for p in pts]
-    
-    return x1, y1
-
-def dispersion(x, y, z, v_mag, disp_func=None):
+def dispersion(x, y, z, v_mag, disp_func=None, xlim=[0,20], ylim=[0,20], logx=False, logy=False):
     """
     Calculate the dispersion of velocity components
 
@@ -65,7 +45,7 @@ def dispersion(x, y, z, v_mag, disp_func=None):
     if disp_func:
         disp_func(radii)
     else:
-        r, prof = inter_prof([0,20],[0,20])
+        r, prof = inter_prof(xlim,ylim,logx,logy)
         vdisp = vdisp_function(radii, r, prof)
         print(vdisp)
     v_mag_updated = np.random.normal(v_mag, np.abs(vdisp), len(x))
