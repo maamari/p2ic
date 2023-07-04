@@ -1,0 +1,7 @@
+LICENSE
+setup.py
+p2ic.egg-info/PKG-INFO
+p2ic.egg-info/SOURCES.txt
+p2ic.egg-info/dependency_links.txt
+p2ic.egg-info/requires.txt
+p2ic.egg-info/top_level.txt

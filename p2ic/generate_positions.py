@@ -1,6 +1,6 @@
 import numpy as np
-from constants import *
-from density_profiles import *
+from p2ic.constants import *
+from p2ic.density_profiles import *
 
 def random_points_in_volume(radius, count, is_disk=False):
     """

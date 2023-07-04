@@ -1,5 +1,5 @@
 import numpy as np
-from constants import *
+from p2ic.constants import *
 
 def surface_density_stars(R):
     """
