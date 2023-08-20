@@ -12,7 +12,7 @@ def random_points(N, R_max):
 def radial_distance(x, y):
     return np.sqrt(x**2 + y**2)
 
-def inter_prof(xlims, ylims, logx=False, logy=False, npts=20):
+def inter_prof(xlims, ylims, logx=False, logy=False, npts=20, old_prof = None):
     """
     Interactively select data points on a plot
 
@@ -24,6 +24,7 @@ def inter_prof(xlims, ylims, logx=False, logy=False, npts=20):
         tuple: Lists of selected x and y coordinates
     """
     ax = plt.gca()
+    if old_prof: ax.scatter(old_prof[0], old_prof[1], c='k')
     ax.set_xlim(xlims[0],xlims[1])
     ax.set_ylim(ylims[0],ylims[1])
     if logx: ax.set_xscale('log')

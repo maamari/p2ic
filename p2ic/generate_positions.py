@@ -146,7 +146,7 @@ def compute_dens(radii, x, y, z, is_disk=False):
         return masses / volumes
 
 
-def density(r=None, z=0, dens_func=None, xlim=[0,20], ylim=[0,20], logx=False, logy=False, npts=20):
+def density(r=None, z=0, dens_func=None, xlim=[0,20], ylim=[0,20], logx=False, logy=False, npts=20, old_prof=None):
     """
     Calculate the dispersion of velocity components
 
@@ -163,6 +163,6 @@ def density(r=None, z=0, dens_func=None, xlim=[0,20], ylim=[0,20], logx=False, l
     if dens_func:
         prof = dens_func(r, z)
     else:
-        r, prof = inter_prof(xlim,ylim,logx,logy,npts)
+        r, prof = inter_prof(xlim,ylim,logx,logy,npts,old_prof=old_prof)
     return np.array(r), np.array(prof)
 
